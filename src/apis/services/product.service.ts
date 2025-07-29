@@ -20,7 +20,11 @@ export const getProductById = async (id: number) => {
     include: {
       category: true,
       reviews: true,
-      addons: true,
+      addons: {
+        include:{
+          options: true
+        }
+      },
     },
   });
 };

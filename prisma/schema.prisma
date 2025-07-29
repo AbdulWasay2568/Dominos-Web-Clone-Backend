@@ -70,6 +70,17 @@ model Category {
   products  Product[]
 }
 
+// model SubCategory {
+//   id        Int    @id @default(autoincrement())
+//   name      String    @unique
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+
+//   products  Product[]
+// }
+
+
+
 model Product {
   id           Int          @id @default(autoincrement())
   name         String
@@ -85,6 +96,30 @@ model Product {
   favourites   Favourite[]
   addons       Addon[]
   orderItems   OrderItem[]
+}
+
+model Addon {
+  id         Int        @id @default(autoincrement())
+  product    Product    @relation(fields: [productId], references: [id])
+  productId  Int
+  name       String
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  options    AddonOption[]
+}
+
+model AddonOption {
+  id              Int   @id @default(autoincrement())
+  addon           Addon    @relation(fields: [addonId], references: [id])
+  addonId         Int
+  optionName      String
+  additionalPrice Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  cartItems       CartItem[]    @relation("CartItemAddonOptions")
+
 }
 
 model Cart {
@@ -106,6 +141,9 @@ model CartItem {
   quantity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  addonOptions  AddonOption[]  @relation("CartItemAddonOptions")
+
 }
 
 model Order {
@@ -177,23 +215,3 @@ model Favourite {
   createdAt DateTime @default(now())
 }
 
-model Addon {
-  id         Int        @id @default(autoincrement())
-  product    Product    @relation(fields: [productId], references: [id])
-  productId  Int
-  name       String
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
-
-  options    AddonOption[]
-}
-
-model AddonOption {
-  id              Int   @id @default(autoincrement())
-  addon           Addon    @relation(fields: [addonId], references: [id])
-  addonId         Int
-  optionName      String
-  additionalPrice Float    @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}

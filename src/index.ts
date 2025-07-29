@@ -13,7 +13,8 @@ import {
   orderItemRouter,
   favouritesRouter,
   orderRouter,
-  
+  addressRouter,
+  authRouter,
   paymentRouter,
   productReviewRouter,
   shippingInfoRouter,
@@ -57,6 +58,8 @@ app.use('/payments', paymentRouter);
 app.use('/product-reviews', productReviewRouter);
 app.use('/shipping-info', shippingInfoRouter);
 app.use('/users', usersRouter);
+app.use('/addresses', addressRouter);
+app.use('/auth', authRouter);
 
 app.listen(3000, () => {
   console.log('Server running at http://localhost:3000');

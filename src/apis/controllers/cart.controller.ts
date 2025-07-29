@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import * as cartService from '../services/cart.service';
 
+export const getAllCartsController = async (_req: Request, res: Response) => {
+  const carts = await cartService.getAllCarts();
+  res.json({ carts });
+};
+
+
 export const createCartController = async (req: Request, res: Response) => {
   try {
     const cart = await cartService.createCart(req.body);
@@ -37,3 +43,23 @@ export const removeCartController = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete cart' });
   }
 };
+
+export const addItemToCartController = async (req: Request, res: Response) => {
+  try {
+    const {userId, productId, quantity, addonOptionIds } = req.body;
+    const cartItem = await cartService.addItemToCart({
+      userId,
+      productId,
+      quantity,
+      addonOptionIds
+    });
+
+    res.status(201).json({
+    message: 'Item added to cart',
+    data: cartItem
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to add item to cart' });
+  }
+}

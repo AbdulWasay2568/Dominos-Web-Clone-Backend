@@ -7,3 +7,10 @@ export interface UpdateCartDto {
   productId?: number;
   quantity?: number;
 }
+
+export interface AddItemToCartDto {
+  productId: number;
+  quantity: number;
+  addonOptionIds?: number[];
+  userId: number;
+}

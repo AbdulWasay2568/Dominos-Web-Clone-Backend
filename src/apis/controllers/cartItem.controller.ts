@@ -46,3 +46,4 @@ export const removeCartItemController = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete cart item' });
   }
 };
+
