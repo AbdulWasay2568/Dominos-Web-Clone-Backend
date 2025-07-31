@@ -17,11 +17,7 @@ export const getCartByUserId = async (userId: number) => {
       cartItems: {
         include: {
           product: true,
-          addonOptions:{
-            include:{
-              addon:true
-            }
-          }
+          addonOptions:true
         },
       },
     },

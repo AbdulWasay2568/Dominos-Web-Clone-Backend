@@ -28,6 +28,18 @@ export const updateCartItem = async (id: number, data: UpdateCartItemDto) => {
   return await prisma.cartItem.update({
     where: { id },
     data,
+    include: {
+      product: {
+        include: {
+          addons: {
+            include: {
+              options: true, 
+            },
+          },
+        },
+      },
+      addonOptions: true, 
+    },
   });
 };
 

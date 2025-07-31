@@ -5,7 +5,7 @@ const cartRouter = Router();
 
 cartRouter.get('/', cartController.getAllCartsController);
 cartRouter.post('/', cartController.createCartController);
-cartRouter.get('/:userId', cartController.getCartByUserIdController);
+cartRouter.get('/user/:userId', cartController.getCartByUserIdController);
 cartRouter.put('/:id', cartController.updateCartController);
 cartRouter.delete('/:id', cartController.removeCartController);
 cartRouter.post('/cartItems', cartController.addItemToCartController);
