@@ -2,10 +2,10 @@
 generator client {
   provider = "prisma-client-js"
 }
-generator erd {
-  provider = "prisma-erd-generator"
-  output   = "./ERD/erd.svg"
-}
+// generator erd {
+//   provider = "prisma-erd-generator"
+//   output   = "./ERD/erd.svg"
+// }
 
 datasource db {
   provider = "postgresql"
@@ -38,6 +38,8 @@ model Users {
   email        String           @unique
   password     String
   role         Role             @default(CUSTOMER)
+  phone        String?           @unique
+  profileImage String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
 
@@ -70,17 +72,6 @@ model Category {
   products  Product[]
 }
 
-// model SubCategory {
-//   id        Int    @id @default(autoincrement())
-//   name      String    @unique
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-
-//   products  Product[]
-// }
-
-
-
 model Product {
   id           Int          @id @default(autoincrement())
   name         String
@@ -88,6 +79,7 @@ model Product {
   price        Float
   category     Category       @relation(fields: [categoryId], references: [id])
   categoryId   Int
+  imageUrl     String?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
 

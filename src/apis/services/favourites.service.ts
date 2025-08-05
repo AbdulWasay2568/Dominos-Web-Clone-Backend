@@ -5,11 +5,11 @@ export const createFavourite = async (data: CreateFavouriteDto) => {
   return await prisma.favourite.create({ data });
 };
 
-export const getAllFavourites = async () => {
+export const getAllFavouritesByUserId = async (userId: number) => {
   return await prisma.favourite.findMany({
+    where: { userId },
     include: {
       product: true,
-      user: true,
     },
   });
 };
@@ -19,7 +19,6 @@ export const getFavouriteById = async (id: number) => {
     where: { id },
     include: {
       product: true,
-      user: true,
     },
   });
 };

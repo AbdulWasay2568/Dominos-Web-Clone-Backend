@@ -10,9 +10,9 @@ export const createFavouriteController = async (req: Request, res: Response) => 
   }
 };
 
-export const getAllFavouriteController = async (_req: Request, res: Response) => {
+export const getAllFavouritesByUserIdController = async (req: Request, res: Response) => {
   try {
-    const favs = await favouriteService.getAllFavourites();
+    const favs = await favouriteService.getAllFavouritesByUserId(Number(req.params.userId));
     res.json(favs);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch favourites' });

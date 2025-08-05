@@ -29,6 +29,16 @@ export const getAddressByIdController = async (req: Request, res: Response) => {
   }
 };
 
+export const getAddressesByUserIdController = async (req: Request, res: Response) => {
+  try {
+    const addresses = await addressService.getAddressesByUserId(Number(req.params.userId));
+    res.json(addresses);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch address' });
+  }
+};
+
+
 export const updateAddressController = async (req: Request, res: Response) => {
   try {
     const address = await addressService.updateAddress(Number(req.params.id), req.body);

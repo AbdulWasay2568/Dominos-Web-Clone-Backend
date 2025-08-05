@@ -22,6 +22,12 @@ export const getAddressById = async (id: number) => {
   });
 };
 
+export const getAddressesByUserId = async (userId: number) => {
+  return await prisma.address.findMany({
+    where: { userId },
+  });
+};
+
 export const updateAddress = async (id: number, data: UpdateAddressDto) => {
   return await prisma.address.update({
     where: { id },

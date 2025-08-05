@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from '../../prisma/client';
-import { Role } from "@prisma/client";
+import { Role } from "../interfaces/enums.interface";
 
 interface RegisterUserInput {
     email: string;

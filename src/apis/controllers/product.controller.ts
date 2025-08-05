@@ -46,3 +46,15 @@ export const removeProductController = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to delete product' });
   }
 };
+
+export const updateProductImage = async (req: Request, res: Response) => {
+  try {
+    const productId = Number(req.params.id);
+
+    if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
+    const imageUrl = await productService.updateProductImageService(productId, req.file);
+    res.json({ success: true, imageUrl });
+  } catch (err: any) {
+    res.status(400).json({ success: false, message: err.message });
+  }
+};
