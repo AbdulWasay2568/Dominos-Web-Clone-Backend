@@ -8,7 +8,6 @@ export const createAddon = async (data: CreateAddonDto) => {
 export const getAllAddons = async () => {
   return await prisma.addon.findMany({
     include: {
-      product: true,
       options: true,
     },
   });
@@ -18,7 +17,6 @@ export const getAddonById = async (id: number) => {
   return await prisma.addon.findUnique({
     where: { id },
     include: {
-      product: true,
       options: true,
     },
   });

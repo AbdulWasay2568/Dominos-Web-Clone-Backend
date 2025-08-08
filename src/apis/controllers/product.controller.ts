@@ -40,8 +40,8 @@ export const updateProductController = async (req: Request, res: Response) => {
 
 export const removeProductController = async (req: Request, res: Response) => {
   try {
-    await productService.deleteProduct(Number(req.params.id));
-    res.status(204).send();
+    const deletedProduct =  await productService.deleteProduct(Number(req.params.id));
+    res.json(deletedProduct);
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete product' });
   }
@@ -52,9 +52,25 @@ export const updateProductImage = async (req: Request, res: Response) => {
     const productId = Number(req.params.id);
 
     if (!req.file) return res.status(400).json({ error: 'No image uploaded' });
-    const imageUrl = await productService.updateProductImageService(productId, req.file);
-    res.json({ success: true, imageUrl });
+    const updatedProduct = await productService.updateProductImageService(productId, req.file);
+    res.json(updatedProduct);
   } catch (err: any) {
     res.status(400).json({ success: false, message: err.message });
+  }
+};
+
+export const createProductWithAddonsController = async (req: Request, res: Response) => {
+  try {
+    const data = JSON.parse(req.body.data);
+    const file = req.file;
+
+    if (!file) {
+      return res.status(400).json({ message: 'Product image is required' });
+    }
+
+    const product = await productService.createProductWithAddonsService(data, file);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create product with addons' });
   }
 };

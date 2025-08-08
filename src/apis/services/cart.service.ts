@@ -57,7 +57,7 @@ export const addItemToCart = async (dto: AddItemToCartDto) => {
     },
     include: {
       addonOptions: true,
-      product: true,
+      product: true
     },
   });
 };

@@ -1,5 +1,5 @@
 import { prisma } from '../../prisma/client';
-import { CreateProductDto, UpdateProductDto } from '../interfaces/product.interface';
+import { CreateProductDto, UpdateProductDto, CreateProductWithAddonsDto } from '../interfaces/product.interface';
 import { deleteFromCloudinary, uploadToCloudinary } from './cloudinary.service';
 
 export const createProduct = async (data: CreateProductDto) => {
@@ -38,9 +38,10 @@ export const updateProduct = async (id: number, data: UpdateProductDto) => {
 };
 
 export const deleteProduct = async (id: number) => {
-  return await prisma.product.delete({
+  const updatedProduct = await prisma.product.delete({
     where: { id },
   });
+  return updatedProduct;
 };
 
 export const updateProductImageService = async (productId: number, file: Express.Multer.File) => {
@@ -61,5 +62,48 @@ export const updateProductImageService = async (productId: number, file: Express
     data: { imageUrl: result.secure_url },
   });
 
-  return updatedProduct.imageUrl;
+  return updatedProduct;
+};
+
+export const createProductWithAddonsService = async (
+  data: CreateProductWithAddonsDto,
+  file: Express.Multer.File
+) => {
+  const { name, description, price, categoryId, addons } = data;
+
+  const category = await prisma.category.findUnique({ where: { id: categoryId } });
+  if (!category) throw new Error('Category not found');
+
+  if (!file) throw new Error('Product image is required');
+
+  const folder = 'dominos/products';
+  const result = await uploadToCloudinary(file.buffer, folder);
+  const imageUrl = result.secure_url;
+
+  const product = await prisma.product.create({
+    data: {
+      name,
+      description,
+      price,
+      imageUrl,
+      category: { connect: { id: categoryId } },
+      addons: {
+        create: addons?.map((addon) => ({
+          name: addon.name,
+          options: {
+            create: addon.options.map((option) => ({
+              optionName: option.name,
+              additionalPrice: option.price,
+            })),
+          },
+        })) || [],
+      },
+    },
+    include: {
+      addons: { include: { options: true } },
+      category: true,
+    },
+  });
+
+  return product;
 };

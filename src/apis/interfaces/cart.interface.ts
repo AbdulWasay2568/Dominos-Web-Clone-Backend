@@ -5,7 +5,6 @@ export interface CreateCartDto {
 export interface UpdateCartDto {
   userId?: number;
   productId?: number;
-  quantity?: number;
 }
 
 export interface AddItemToCartDto {

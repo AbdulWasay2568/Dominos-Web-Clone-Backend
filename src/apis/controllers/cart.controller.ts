@@ -54,10 +54,7 @@ export const addItemToCartController = async (req: Request, res: Response) => {
       addonOptionIds
     });
 
-    res.status(201).json({
-    message: 'Item added to cart',
-    data: cartItem
-    });
+    res.json(cartItem);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to add item to cart' });
