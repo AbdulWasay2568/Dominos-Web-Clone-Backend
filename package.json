@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "start": "ts-node src/index.ts",
-    "build": "tsc",
-    "seed": "ts-node prisma/seeds/category.ts"
-  },
+  "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+  "start": "npx prisma migrate deploy && ts-node src/index.ts",
+  "build": "tsc",
+  "seed": "ts-node prisma/seeds/category.ts"
+},
+
   "keywords": [],
   "author": "",
   "license": "ISC",
