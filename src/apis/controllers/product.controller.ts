@@ -15,7 +15,7 @@ export const getAllProductsController = async (_req: Request, res: Response) => 
     const products = await productService.getAllProducts();
     res.json(products);
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch products' });
+    res.status(500).json(error);
   }
 };
 

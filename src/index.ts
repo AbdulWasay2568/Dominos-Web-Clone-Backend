@@ -20,12 +20,13 @@ import {
   productReviewRouter,
   shippingInfoRouter,
   usersRouter,
-} from './apis/routes'; // adjust path if needed
+} from './apis/routes';
 
 // Load .env in development only
-if (process.env.NODE_ENV !== 'production') {
+// if (process.env.NODE_ENV !== 'production') {
+//   dotenv.config({ path: '.env' });
+// }
   dotenv.config({ path: '.env' });
-}
 
 const app: Express = express();
 
