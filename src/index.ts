@@ -1,8 +1,8 @@
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { PrismaClient } from '@prisma/client';
 import serverless from 'serverless-http';
+import { PrismaClient } from '@prisma/client';
 
 import {
   productRouter,
@@ -22,15 +22,24 @@ import {
   usersRouter,
 } from './apis/routes';
 
-// Load .env in development only
-// if (process.env.NODE_ENV !== 'production') {
-//   dotenv.config({ path: '.env' });
-// }
+// Load env vars only in dev
+if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: '.env' });
+}
+
+// Prisma singleton
+declare global {
+  var prismaClient: PrismaClient | undefined;
+}
+export const prismaClient =
+  global.prismaClient ??
+  new PrismaClient({
+    log: ['query', 'error', 'warn'],
+  });
+if (process.env.NODE_ENV !== 'production') global.prismaClient = prismaClient;
 
 const app: Express = express();
 
-// CORS Configuration
 app.use(
   cors({
     origin: '*',
@@ -39,20 +48,12 @@ app.use(
   })
 );
 
-// Parse JSON body
 app.use(express.json());
 
-// Prisma Client
-export const prismaClient = new PrismaClient({
-  log: ['query'],
-});
-
-// Test route
 app.get('/', (req: Request, res: Response) => {
   res.send('Ecommerce backend is running on Vercel!');
 });
 
-// Register routers
 app.use('/products', productRouter);
 app.use('/categories', categoryRouter);
 app.use('/addons', addonsRouter);
@@ -69,7 +70,6 @@ app.use('/users', usersRouter);
 app.use('/addresses', addressRouter);
 app.use('/auth', authRouter);
 
-// Local dev server
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
@@ -77,5 +77,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-// Export handler for Vercel serverless
 export const handler = serverless(app);
