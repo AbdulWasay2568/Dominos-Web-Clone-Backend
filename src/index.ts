@@ -21,7 +21,9 @@ import {
   usersRouter,
 } from './apis/routes';
 
-dotenv.config({ path: '.env' });
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: '.env' });
+}
 const app: Express = express();
 
 // CORS Configuration
