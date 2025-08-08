@@ -1,4 +1,5 @@
 export interface CreateOrderItemDto {
+  orderId: number;
   productId: number;
   quantity: number;
   addonOptions: number[];
