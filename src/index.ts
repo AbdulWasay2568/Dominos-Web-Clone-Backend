@@ -77,4 +77,4 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
-export default handler = serverless(app);
+export default serverless(app);
