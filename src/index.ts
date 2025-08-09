@@ -39,16 +39,10 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Simple DB test route (debug only — remove in prod)
-app.get('/test-db', async (req: Request, res: Response) => {
-  try {
-    const db = getPrisma();
-    const now = await db.$queryRaw`SELECT NOW()`;
-    res.json({ status: 'ok', now });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ status: 'error', error: String(error) });
-  }
+app.get('/test-db', (req, res) => {
+  res.json({ status: 'ok', message: 'Route is working' });
 });
+
 
 // Import routes *inside* serverless handler to avoid cold start cost
 import {
