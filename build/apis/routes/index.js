@@ -1,0 +1,16 @@
+export { default as productRouter } from './product.routes.js';
+export { default as categoryRouter } from './category.routes.js';
+export { default as addonsRouter } from './addons.routes.js';
+export { default as addonOptionsRouter } from './addonOptions.routes.js';
+export { default as cartRouter } from './cart.routes.js';
+export { default as cartItemRouter } from './cartItem.routes.js';
+export { default as favouritesRouter } from './favourites.routes.js';
+export { default as orderItemRouter } from './orderItem.routes.js';
+export { default as orderRouter } from './order.routes.js';
+export { default as paymentRouter } from './payment.routes.js';
+export { default as productReviewRouter } from './productReview.routes.js';
+export { default as shippingInfoRouter } from './shippingInfo.routes.js';
+export { default as usersRouter } from './users.routes.js';
+export { default as authRouter } from './auth.routes.js';
+export { default as addressRouter } from './address.routes.js';
+//# sourceMappingURL=index.js.map
