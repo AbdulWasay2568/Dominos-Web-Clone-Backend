@@ -12,6 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Prisma singleton pattern for serverless
 declare global {
+  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
@@ -38,46 +39,45 @@ app.use(
 
 app.use(express.json());
 
-// Health check / root route
+/**
+ * Health check — instant, no DB
+ */
 app.get('/', (req: Request, res: Response) => {
-  res.status(200).send('Ecommerce backend is running ✅');
+  res.status(200).send('✅ Backend is running without touching DB');
 });
 
-// Import routes (lazy — avoids cold start cost)
-import {
-  productRouter,
-  categoryRouter,
-  addonsRouter,
-  addonOptionsRouter,
-  cartRouter,
-  cartItemRouter,
-  orderItemRouter,
-  favouritesRouter,
-  orderRouter,
-  addressRouter,
-  authRouter,
-  paymentRouter,
-  productReviewRouter,
-  shippingInfoRouter,
-  usersRouter,
-} from './apis/routes';
+/**
+ * DB test route — actually queries the DB
+ */
+app.get('/db-test', async (req: Request, res: Response) => {
+  try {
+    const result = await prisma.$queryRaw`SELECT NOW()`;
+    res.json({ ok: true, result });
+  } catch (err: any) {
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
 
-// Register routes
-app.use('/products', productRouter);
-app.use('/categories', categoryRouter);
-app.use('/addons', addonsRouter);
-app.use('/addon-options', addonOptionsRouter);
-app.use('/carts', cartRouter);
-app.use('/cart-items', cartItemRouter);
-app.use('/order-items', orderItemRouter);
-app.use('/favourites', favouritesRouter);
-app.use('/orders', orderRouter);
-app.use('/payments', paymentRouter);
-app.use('/product-reviews', productReviewRouter);
-app.use('/shipping-info', shippingInfoRouter);
-app.use('/users', usersRouter);
-app.use('/addresses', addressRouter);
-app.use('/auth', authRouter);
+// Import and register all other routes — only in dev for now
+if (process.env.NODE_ENV !== 'production') {
+  import('./apis/routes').then((routes) => {
+    app.use('/products', routes.productRouter);
+    app.use('/categories', routes.categoryRouter);
+    app.use('/addons', routes.addonsRouter);
+    app.use('/addon-options', routes.addonOptionsRouter);
+    app.use('/carts', routes.cartRouter);
+    app.use('/cart-items', routes.cartItemRouter);
+    app.use('/order-items', routes.orderItemRouter);
+    app.use('/favourites', routes.favouritesRouter);
+    app.use('/orders', routes.orderRouter);
+    app.use('/payments', routes.paymentRouter);
+    app.use('/product-reviews', routes.productReviewRouter);
+    app.use('/shipping-info', routes.shippingInfoRouter);
+    app.use('/users', routes.usersRouter);
+    app.use('/addresses', routes.addressRouter);
+    app.use('/auth', routes.authRouter);
+  });
+}
 
 // Local dev mode — normal Express server
 if (process.env.NODE_ENV !== 'production') {
