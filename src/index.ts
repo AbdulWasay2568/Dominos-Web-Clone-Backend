@@ -1,9 +1,49 @@
+// src/index.ts
 import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import { PrismaClient } from '@prisma/client';
 
+// Load env vars only locally
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: '.env' });
+}
+
+// Prisma singleton pattern for serverless
+declare global {
+  var prisma: PrismaClient | undefined;
+}
+
+export const prisma =
+  global.prisma ??
+  new PrismaClient({
+    log: ['query', 'error', 'warn'],
+  });
+
+if (process.env.NODE_ENV !== 'production') {
+  global.prisma = prisma;
+}
+
+// Express app
+const app: Express = express();
+
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+  })
+);
+
+app.use(express.json());
+
+// Health check / root route
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).send('Ecommerce backend is running ✅');
+});
+
+// Import routes (lazy — avoids cold start cost)
 import {
   productRouter,
   categoryRouter,
@@ -22,38 +62,7 @@ import {
   usersRouter,
 } from './apis/routes';
 
-// Load env vars only in dev
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: '.env' });
-}
-
-// Prisma singleton
-declare global {
-  var prismaClient: PrismaClient | undefined;
-}
-export const prismaClient =
-  global.prismaClient ??
-  new PrismaClient({
-    log: ['query', 'error', 'warn'],
-  });
-if (process.env.NODE_ENV !== 'production') global.prismaClient = prismaClient;
-
-const app: Express = express();
-
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true,
-  })
-);
-
-app.use(express.json());
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Ecommerce backend is running on Vercel!');
-});
-
+// Register routes
 app.use('/products', productRouter);
 app.use('/categories', categoryRouter);
 app.use('/addons', addonsRouter);
@@ -70,11 +79,13 @@ app.use('/users', usersRouter);
 app.use('/addresses', addressRouter);
 app.use('/auth', authRouter);
 
+// Local dev mode — normal Express server
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
   });
 }
 
+// Serverless export for Vercel
 export default serverless(app);
